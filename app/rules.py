@@ -13,7 +13,7 @@ def parse_datetime(value):
 
 def revival_score(lead, now=None):
     """Explainable heuristic score from 0-100; not a predictive model."""
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     status = str(lead.get("status", "new")).lower()
     if lead.get("opted_out") or status in {"won", "lost", "do_not_contact", "unqualified"}:
         return {"score": 0, "reasons": [f"Lead status is {status}; do not prioritize."]}
