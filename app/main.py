@@ -5,11 +5,10 @@ import sqlite3
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from typing import Annotated
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
