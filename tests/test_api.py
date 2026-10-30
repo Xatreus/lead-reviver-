@@ -1,10 +1,17 @@
 from fastapi.testclient import TestClient
 
 from app import main
+from app.database import engine_for_url
+
+
+def use_test_database(monkeypatch, tmp_path):
+    database_url = f"sqlite:///{tmp_path / 'test.db'}"
+    monkeypatch.setattr(main, "DATABASE_URL", database_url)
+    engine_for_url.cache_clear()
 
 
 def test_lead_crud_and_opt_out_blocks_draft(tmp_path, monkeypatch):
-    monkeypatch.setattr(main, "DATABASE_PATH", str(tmp_path / "test.db"))
+    use_test_database(monkeypatch, tmp_path)
     monkeypatch.setattr(main, "GEMINI_API_KEY", "")
     with TestClient(main.app) as client:
         response = client.post("/api/leads", json={
@@ -39,10 +46,28 @@ def test_lead_crud_and_opt_out_blocks_draft(tmp_path, monkeypatch):
 
 
 def test_health_does_not_expose_api_key(tmp_path, monkeypatch):
-    monkeypatch.setattr(main, "DATABASE_PATH", str(tmp_path / "test.db"))
+    use_test_database(monkeypatch, tmp_path)
     monkeypatch.setattr(main, "GEMINI_API_KEY", "never-return-this-secret")
     with TestClient(main.app) as client:
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json()["gemini_configured"] is True
         assert "never-return-this-secret" not in response.text
+
+
+def test_knowledge_requires_api_key(tmp_path, monkeypatch):
+    use_test_database(monkeypatch, tmp_path)
+    monkeypatch.setattr(main, "GEMINI_API_KEY", "")
+    with TestClient(main.app) as client:
+        response = client.post("/api/knowledge", json={
+            "title": "Product facts",
+            "content": "Lead Reviver helps sales teams prioritize follow-up.",
+        })
+        assert response.status_code == 503
+
+
+def test_invalid_lead_payload_is_rejected(tmp_path, monkeypatch):
+    use_test_database(monkeypatch, tmp_path)
+    with TestClient(main.app) as client:
+        response = client.post("/api/leads", json={"name": "", "deal_value": -1})
+        assert response.status_code == 422

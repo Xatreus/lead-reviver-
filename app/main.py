@@ -17,7 +17,7 @@ from app.rules import revival_score
 load_dotenv()
 DATABASE_PATH = os.getenv("DATABASE_PATH", "./data/lead_reviver.db")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-4-argon").strip()
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash").strip()
 LeadStatus = Literal["new", "contacted", "engaged", "proposal", "negotiation", "won", "lost", "unqualified", "do_not_contact"]
 
 
@@ -106,6 +106,10 @@ def get_lead(lead_id):
     if row is None:
         raise HTTPException(status_code=404, detail="Lead not found")
     return row_to_dict(row)
+
+
+def get_db_session():
+    yield from get_session(DATABASE_URL)
 
 
 @app.get("/", response_class=HTMLResponse)

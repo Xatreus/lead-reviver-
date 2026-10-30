@@ -1,0 +1,31 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: lead_reviver
+      POSTGRES_USER: lead_reviver
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-local-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lead_reviver -d lead_reviver"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://lead_reviver:${POSTGRES_PASSWORD:-change-this-local-password}@db:5432/lead_reviver
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
