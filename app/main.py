@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, or_, select
@@ -361,7 +361,7 @@ def list_knowledge(session: Session = Depends(get_db_session)):
 
 @app.get("/api/knowledge/search")
 def search_knowledge_endpoint(
-    q: Annotated[str, Field(min_length=2, max_length=1000)],
+    q: Annotated[str, Query(min_length=2, max_length=1000)],
     limit: int = 3,
     session: Session = Depends(get_db_session),
 ):
