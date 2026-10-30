@@ -1,7 +1,7 @@
+from pgvector.sqlalchemy import VECTOR
 from sqlalchemy import Boolean, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import JSON
-from pgvector.sqlalchemy import VECTOR
 
 from app.database import Base
 
