@@ -14,7 +14,7 @@ def test_split_text_overlaps_and_covers_input():
 
 
 def test_split_text_normalizes_whitespace_and_empty_input():
-    assert split_text("  hello\\n\\nworld  ") == ["hello world"]
+    assert split_text("  hello\n\nworld  ") == ["hello world"]
     assert split_text("   ") == []
 
 
