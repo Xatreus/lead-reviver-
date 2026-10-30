@@ -17,6 +17,6 @@ def test_missing_contact_history_is_explained():
     assert result["score"] == 30
     assert any("No last-contact date" in reason for reason in result["reasons"])
 
-def test_score_is_capped_at_100():
+def test_maximum_current_priority_combination_scores_95():
     result = revival_score({"status":"negotiation","last_contact_at":"2026-01-01T00:00:00+00:00","next_follow_up_at":"2026-01-01T00:00:00+00:00","deal_value":50000}, now=NOW)
-    assert result["score"] == 100
+    assert result["score"] == 95
