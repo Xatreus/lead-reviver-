@@ -17,7 +17,7 @@ from app.rules import revival_score
 load_dotenv()
 DATABASE_PATH = os.getenv("DATABASE_PATH", "./data/lead_reviver.db")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash").strip()
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-4-argon").strip()
 LeadStatus = Literal["new", "contacted", "engaged", "proposal", "negotiation", "won", "lost", "unqualified", "do_not_contact"]
 
 
