@@ -1,14 +1,15 @@
-from contextlib import asynccontextmanager, contextmanager
-from datetime import datetime, timezone
 import csv
 import io
 import os
 import sqlite3
+from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from typing import Annotated
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -90,7 +91,7 @@ class DraftRequest(BaseModel):
 
 
 def now_iso():
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def row_to_dict(row):
@@ -239,7 +240,7 @@ def list_drafts(lead_id: int):
 
 
 @app.post("/api/leads/import")
-async def import_csv(file: UploadFile = File(...)):
+async def import_csv(file: Annotated[UploadFile, File()]):
     if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail="Upload a .csv file.")
     raw = await file.read()
