@@ -1,14 +1,14 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 def parse_datetime(value):
     if not value:
         return None
     try:
-        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        result = datetime.fromisoformat(value)
     except (ValueError, AttributeError):
         return None
-    return result.replace(tzinfo=timezone.utc) if result.tzinfo is None else result
+    return result.replace(tzinfo=UTC) if result.tzinfo is None else result
 
 
 def revival_score(lead, now=None):
