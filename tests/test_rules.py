@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from app.rules import revival_score
 
-NOW = datetime(2026, 10, 31, tzinfo=timezone.utc)
+NOW = datetime(2026, 10, 31, tzinfo=UTC)
 
 def test_due_stale_high_value_lead_gets_high_priority():
     result = revival_score({"status":"proposal","last_contact_at":"2026-09-01T00:00:00+00:00","next_follow_up_at":"2026-10-01T00:00:00+00:00","deal_value":12000}, now=NOW)
